@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B7A5F">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<title>ZishuChat</title>
+<meta name="description" content="ZishuChat is fast, private and beautiful messaging for Android. Chats, groups, voice notes, free voice and video calls, locked chats and 46 chat themes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.3a6.5 6.5 0 0 1 3.5 5.7"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20h1"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 1.6-2.1-.5-1.3.2-2.4 1.6-2.4H17a4 4 0 0 0 4-4c0-5-4-9.5-9-9.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.2A9.6 9.6 0 0 1 12 6c5 0 8.5 4 9.5 6a14 14 0 0 1-3 3.7M6.3 7.6A14 14 0 0 0 2.5 12C3.5 14 7 18 12 18c1.4 0 2.6-.3 3.7-.8"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z"/><path d="M10 21h4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.2 7.8 8 9 4.8-1.2 8-4.5 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12 20 4l-4 16-4-6z"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 12 5M3 3l18 18"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM17 8a5 5 0 0 1 0 8"/></symbol>
+    <symbol id="i-end" viewBox="0 0 24 24"><path d="M3 14c5-4 13-4 18 0l-2 3-4-1.5v-2.5a9 9 0 0 0-6 0v2.5L5 17z"/></symbol>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="wrap">
+    <nav class="nav" aria-label="Main">
+      <a class="brand" href="#top" id="top"><img src="assets/img/logo.png" alt="" width="42" height="42"><span>ZishuChat</span></a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#customize">Customize</a>
+        <a href="#screens">Screens</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a class="btn btn-white" href="#download">Get the app</a>
+    </nav>
+
+    <div class="hero-grid">
+      <div>
+        <span class="pill"><b>New</b> ZishuChat for Android</span>
+        <h1>Messaging that is fast, private and <em>beautiful.</em></h1>
+        <p class="lead">Chats, groups, voice notes and free voice and video calls, wrapped in an app you can restyle down to the bubble. Built native for Android, light enough for any phone.</p>
+        <div class="cta-row">
+          <a class="btn btn-white" href="#download" data-dl><svg class="ico"><use href="#i-down"/></svg><span data-dl-label>Get the app</span></a>
+          <a class="btn btn-ghost" href="#features">Explore features</a>
+        </div>
+        <div class="facts">
+          <span><svg class="ico"><use href="#i-check"/></svg>Free voice and video calls</span>
+          <span><svg class="ico"><use href="#i-check"/></svg>No ads</span>
+          <span><svg class="ico"><use href="#i-check"/></svg>Android 5.0 and up</span>
+        </div>
+      </div>
+
+      <div class="stage" aria-label="ZishuChat app screens">
+        <div class="phone p-left"><img src="assets/img/group.webp" alt="A group chat with a custom wallpaper" width="360" height="680"></div>
+        <div class="phone p-right"><img src="assets/img/calls.webp" alt="The calls tab with voice call history" width="360" height="680"></div>
+        <div class="phone p-main"><img src="assets/img/chats.webp" alt="The chats list with filters for unread, favorites and groups" width="360" height="680"></div>
+        <div class="chip c1"><span class="dot"></span>Stardust is online</div>
+        <div class="chip c2"><svg class="ico"><use href="#i-lock"/></svg>3 new messages in locked chats</div>
+        <div class="chip c3"><svg class="ico"><use href="#i-phone"/></svg>Voice call · 04:12</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <div class="nums" role="list">
+    <div class="num" role="listitem"><b>46</b><span>chat themes, from Sakura Blossom to Tokyo Night</span></div>
+    <div class="num" role="listitem"><b>5</b><span>accounts on one phone, switch in a tap</span></div>
+    <div class="num" role="listitem"><b>5 min</b><span>per voice message, slide to cancel</span></div>
+    <div class="num" role="listitem"><b>8 h</b><span>of live location sharing, stop any time</span></div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Features</span>
+      <h2>Everything a modern messenger should do.</h2>
+      <p>The basics are fast and solid. Then there is the stuff that makes ZishuChat feel like yours.</p>
+    </div>
+
+    <div class="stack">
+      <div class="duo-a">
+        <article class="card dark">
+          <div class="calls-card">
+            <div style="display:grid;gap:14px">
+              <span class="tag"><svg class="ico"><use href="#i-video"/></svg>Calls</span>
+              <h3>Free voice and video calls, with the controls you reach for.</h3>
+              <p>Crisp calls over a direct connection between phones. Mute the mic, switch to speaker, flip the camera, or step out and tap the banner to return to an ongoing call.</p>
+              <ul class="ticks">
+                <li><svg class="ico"><use href="#i-check"/></svg>Rings even when the app is closed</li>
+                <li><svg class="ico"><use href="#i-check"/></svg>Reconnects by itself on a shaky network</li>
+                <li><svg class="ico"><use href="#i-check"/></svg>Missed, declined and answered calls kept in your history</li>
+              </ul>
+            </div>
+            <div class="callmock" aria-hidden="true">
+              <div class="av">S</div>
+              <div class="nm">Stardust</div>
+              <div class="st">Connected · <span id="callTimer">04:12</span></div>
+              <div class="cbtns">
+                <div class="cb"><svg class="ico"><use href="#i-mute"/></svg></div>
+                <div class="cb"><svg class="ico"><use href="#i-speaker"/></svg></div>
+                <div class="cb"><svg class="ico"><use href="#i-video"/></svg></div>
+                <div class="cb end"><svg class="ico"><use href="#i-end"/></svg></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card dark">
+          <span class="tag"><svg class="ico"><use href="#i-lock"/></svg>Locked chats</span>
+          <h3>Keep private chats private.</h3>
+          <p>Move any chat out of sight. It leaves your chat list, Contacts and Calls, and opens only with your phone screen lock: PIN, pattern, password or fingerprint. It locks again when you leave.</p>
+          <div class="lock-notif"><svg class="ico"><use href="#i-bell"/></svg><div>3 new messages in locked chats<small>No name. No text. Just a quiet note.</small></div></div>
+        </article>
+      </div>
+
+      <div class="trio">
+        <article class="card">
+          <span class="tag"><svg class="ico"><use href="#i-users"/></svg>Groups</span>
+          <h3>Groups with real admin tools.</h3>
+          <div class="avs" aria-hidden="true"><i style="background:#0FA37F">Z</i><i style="background:#EC5A9E">S</i><i style="background:#6C5CE7">F</i><i style="background:#F59E0B">+</i></div>
+          <p>Name and photo, make admins, add or remove members, and start a similar group with the same people.</p>
+          <div class="pills"><span>Admins</span><span>Favorites</span><span>Custom lists</span><span>Mute</span></div>
+        </article>
+        <article class="card">
+          <span class="tag"><svg class="ico"><use href="#i-pin"/></svg>Live location</span>
+          <h3>Share where you are, for as long as you choose.</h3>
+          <div class="mapmock" aria-hidden="true"><span class="live">LIVE</span><span class="pin"></span></div>
+          <div class="pills"><span>15 minutes</span><span>1 hour</span><span>8 hours</span></div>
+        </article>
+        <article class="card">
+          <span class="tag"><svg class="ico"><use href="#i-qr"/></svg>QR codes</span>
+          <h3>Add a friend with a scan.</h3>
+          <div class="qrbox">
+            <svg id="qr" viewBox="0 0 25 25" aria-hidden="true"></svg>
+            <small>Show your code, or scan theirs. Find people by username or exact email too.</small>
+          </div>
+          <div class="pills"><span>Share your code</span><span>Save to Pictures</span><span>Scan from a photo</span></div>
+        </article>
+      </div>
+
+      <div class="duo-b">
+        <article class="card">
+          <span class="tag"><svg class="ico"><use href="#i-mic"/></svg>Voice notes</span>
+          <h3>Say it instead of typing it.</h3>
+          <div class="wave" aria-hidden="true"><span class="play"><svg class="ico"><use href="#i-mic"/></svg></span><span id="waveBars" style="display:flex;align-items:center;gap:3px;height:100%"></span><time>0:42</time></div>
+          <p>Hold to record up to five minutes, slide to cancel, release to send.</p>
+        </article>
+        <article class="card">
+          <span class="tag"><svg class="ico"><use href="#i-send"/></svg>In every chat</span>
+          <h3>Small tools that save you taps.</h3>
+          <div class="reacts" aria-label="Six reactions">
+            <span>👍</span><span>❤️</span><span>😂</span><span>😮</span><span>😢</span><span>🙏</span>
+          </div>
+          <div class="pills">
+            <span>Swipe to reply</span><span>Pin up to 3 messages</span><span>Forward</span><span>Delete for everyone</span><span>Search in chat</span><span>Media, links and docs</span><span>Disappearing messages</span><span>Export chat</span><span>Share contacts</span><span>Photos and files up to 10 MB</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="customize" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Customize</span>
+      <h2>Make every chat yours.</h2>
+      <p>Pick a theme, recolor the bubbles, round the corners. In the app you can style all chats at once or just one. Try it here.</p>
+    </div>
+    <div class="cust">
+      <div class="panel">
+        <div>
+          <h4>Theme</h4>
+          <div class="themes" id="themes"></div>
+        </div>
+        <div>
+          <h4>Sent bubble</h4>
+          <div class="swatches" id="swatches"></div>
+        </div>
+        <div class="rng">
+          <label for="rad">Bubble roundness <output id="radOut">18 dp</output></label>
+          <input id="rad" type="range" min="4" max="28" value="18">
+        </div>
+        <div class="rng">
+          <label for="ts">Text size <output id="tsOut">15 pt</output></label>
+          <input id="ts" type="range" min="12" max="22" value="15">
+        </div>
+        <div class="rng">
+          <label for="gap">Space between bubbles <output id="gapOut">8 dp</output></label>
+          <input id="gap" type="range" min="0" max="24" value="8">
+        </div>
+        <div>
+          <h4>And also</h4>
+          <div class="pills"><span>20+ fonts</span><span>Custom notification tones</span><span>Custom ringtones</span><span>Gallery wallpapers</span><span>Light and dark mode</span></div>
+        </div>
+      </div>
+      <div class="prev">
+        <div class="phone">
+          <div class="screen" id="screen">
+            <div class="bar"><div class="av">S</div><div>Stardust<small>online</small></div></div>
+            <div class="msgs" id="msgs">
+              <div class="b in">Hey! Are we still on for tonight?<small>9:41</small></div>
+              <div class="b out">Yes! Sharing my live location now 📍<small>9:42</small></div>
+              <div class="b in">Perfect, see you soon ❤️<small>9:42</small></div>
+              <div class="b out">On my way<small>9:43</small></div>
+            </div>
+            <div class="inp"><span>Message</span><i><svg class="ico"><use href="#i-send"/></svg></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="screens" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Screens</span>
+      <h2>Clean, calm and quick to learn.</h2>
+      <p>A floating tab bar, soft rounded cards and one green you will recognize. These are real screens from the app. Swipe to see more.</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="gallery">
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/login.webp" alt="Sign in screen" width="420" height="793" loading="lazy"></div><figcaption><h4>Welcome back</h4><p>Sign in with email or continue with Google.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/chats.webp" alt="Chats list" width="420" height="793" loading="lazy"></div><figcaption><h4>Chats</h4><p>Filter by unread, favorites, groups or your own lists.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/group.webp" alt="Group chat" width="420" height="793" loading="lazy"></div><figcaption><h4>Groups</h4><p>Wallpapers, member tools and a clear group card.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/locked.webp" alt="Locked chats guide" width="420" height="793" loading="lazy"></div><figcaption><h4>Locked chats</h4><p>Step by step guide, with a clear privacy warning.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/lockedhow.webp" alt="Locked chats details" width="420" height="793" loading="lazy"></div><figcaption><h4>How it works</h4><p>Hidden from lists, opens with your screen lock.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/customize.webp" alt="Customize screen with theme gallery" width="420" height="793" loading="lazy"></div><figcaption><h4>Customize</h4><p>Themes, colors, bubbles, fonts and sounds.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/disappear.webp" alt="Disappearing messages timer" width="420" height="793" loading="lazy"></div><figcaption><h4>Disappearing messages</h4><p>Pick 24 hours, 7 days or 90 days.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/contactinfo.webp" alt="Contact info screen" width="420" height="793" loading="lazy"></div><figcaption><h4>Contact info</h4><p>Message, audio and video in one tap.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/addcontact.webp" alt="Add contact screen" width="420" height="793" loading="lazy"></div><figcaption><h4>Add contact</h4><p>Search by email, username or scan a QR code.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/profile.webp" alt="Profile screen" width="420" height="793" loading="lazy"></div><figcaption><h4>Profile</h4><p>Your QR code, settings and account switching.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/contacts.webp" alt="Contacts list" width="420" height="793" loading="lazy"></div><figcaption><h4>Contacts</h4><p>Last seen at a glance, or hidden if you prefer.</p></figcaption></figure>
+      <figure class="shot" style="margin:0"><div class="phone"><img src="assets/img/calls.webp" alt="Calls history" width="420" height="793" loading="lazy"></div><figcaption><h4>Calls</h4><p>Every voice and video call, one tap to call back.</p></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="privacy" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Privacy and control</span>
+      <h2>You decide who sees what.</h2>
+      <p>No ads and no selling your data. Plus the controls that let you manage your own presence.</p>
+    </div>
+    <div class="priv">
+      <div class="pi"><div class="ib"><svg class="ico"><use href="#i-lock"/></svg></div><h3>Locked chats</h3><p>Hide sensitive conversations behind your phone screen lock. The app never sees your PIN or fingerprint.</p></div>
+      <div class="pi"><div class="ib"><svg class="ico"><use href="#i-eye-off"/></svg></div><h3>Hide last seen</h3><p>Show only “last seen recently”. You can also turn message previews off in notifications.</p></div>
+      <div class="pi"><div class="ib"><svg class="ico"><use href="#i-clock"/></svg></div><h3>Disappearing messages</h3><p>Choose 24 hours, 7 days or 90 days. Older messages are hidden for both people.</p></div>
+      <div class="pi"><div class="ib"><svg class="ico"><use href="#i-trash"/></svg></div><h3>Delete your way</h3><p>Delete a message for everyone, or only for you. Clear a whole chat on your phone in one tap.</p></div>
+      <div class="pi"><div class="ib"><svg class="ico"><use href="#i-ban"/></svg></div><h3>Block and report</h3><p>Block anyone, report a chat or a group to support, and manage your blocked list in Settings.</p></div>
+      <div class="pi"><div class="ib"><svg class="ico"><use href="#i-shield"/></svg></div><h3>Found only on your terms</h3><p>People find you by username or exact email. Your email and phone number are never shown to others.</p></div>
+    </div>
+    <div class="honest">
+      <svg class="ico"><use href="#i-info"/></svg>
+      <p><b>Straight talk.</b> Connections use HTTPS, but chats are not end-to-end encrypted, and shared photos and files are stored on third-party hosting. We say so plainly in the <button class="linkbtn" type="button" data-legal="privacy">Privacy Policy</button>, so you can choose what you share.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="band">
+      <div class="band-grid">
+        <div>
+          <span class="eyebrow">Built native</span>
+          <h2>Light on your phone. Heavy on polish.</h2>
+          <p>ZishuChat is a native Android app that avoids heavy UI frameworks, so it starts quickly and runs on older phones. It follows your system light or dark mode and keeps notifications working in the background.</p>
+        </div>
+        <div class="spec">
+          <div><b>Android 5.0+</b><span>Works on phones from 2014 onward</span></div>
+          <div><b>Native</b><span>Written for Android, not a web wrapper</span></div>
+          <div><b>Light and dark</b><span>Follows your phone, or choose</span></div>
+          <div><b>Always on</b><span>Messages and calls arrive in the background</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">FAQ</span>
+      <h2>Questions, answered.</h2>
+    </div>
+    <div class="faq">
+      <details><summary>Is ZishuChat free?</summary><p>Yes. Messaging and voice and video calls are free to use, and the app shows no ads.</p></details>
+      <details><summary>Which phones does it run on?</summary><p>Any Android phone running Android 5.0 or newer. Other platforms have not been announced yet.</p></details>
+      <details><summary>How do I find my friends?</summary><p>Search by username or an exact email address, scan their QR code, or share yours from the Profile tab. The app does not read your phone's address book.</p></details>
+      <details><summary>Are my chats end-to-end encrypted?</summary><p>No. Data travels over encrypted HTTPS connections and access is limited by security rules, but messages are stored on the service's servers. Shared photos and files are uploaded to third-party hosting. Please do not share anything you would not want others to see. The Privacy Policy has the full details.</p></details>
+      <details><summary>How do Locked chats work?</summary><p>Press and hold a chat, tap the three dots and choose Lock chat. It disappears from your lists and opens only after you confirm your phone screen lock. Locked chats also sync to your other phones signed in to the same account.</p></details>
+      <details><summary>Can I use more than one account?</summary><p>Yes, up to five on the same phone. Notifications and calls arrive for the account that is currently active.</p></details>
+      <details><summary>What are the file and voice limits?</summary><p>Files and photos can be up to 10 MB each. A single voice message can run up to five minutes.</p></details>
+      <details><summary>How do I delete my account?</summary><p>Open Profile, then Settings, then Delete account. Your profile, username and sign-in are removed. Messages already delivered to other people may remain in their chats.</p></details>
+      <details><summary>How do I reach support?</summary><p>Email us at support.stardustofficial@gmail.com. We read every message.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="download" style="padding-top:0">
+  <div class="wrap">
+    <div class="dl">
+      <img src="assets/img/logo.png" alt="ZishuChat app icon" width="84" height="84">
+      <h2>Chat the way you want.</h2>
+      <p>Join ZishuChat and bring your friends. Fast, private and beautiful, on Android.</p>
+      <div class="cta-row">
+        <a class="btn btn-white" href="#download" data-dl aria-disabled="true" role="button"><svg class="ico"><use href="#i-down"/></svg><span data-dl-label>Android download · coming soon</span></a>
+      </div>
+      <small>Free · Android 5.0 and up</small>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top"><img src="assets/img/logo.png" alt="" width="42" height="42"><span>ZishuChat</span></a>
+        <p>Fast, private and beautiful messaging. Made by ZishuTron.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#customize">Customize</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal and support</h4>
+        <ul>
+          <li><button class="fl" type="button" data-legal="privacy">Privacy Policy</button></li>
+          <li><button class="fl" type="button" data-legal="terms">Terms of Service</button></li>
+          <li class="mail"><code id="mailText">support.stardustofficial@gmail.com</code><button type="button" id="copyMail">Copy</button></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legalline"><span>© 2026 ZishuTron. All rights reserved.</span><span>ZishuChat is built with Google Firebase, ImgBB, Cloudinary and WebRTC.</span></div>
+  </div>
+</footer>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+  <div class="sheet">
+    <header><b id="ovTitle">Privacy Policy</b><button type="button" id="ovClose" aria-label="Close">×</button></header>
+    <div class="body" id="ovBody"></div>
+  </div>
+</div>
+
+<script src="js/legal.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
