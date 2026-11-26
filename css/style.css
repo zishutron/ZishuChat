@@ -252,8 +252,8 @@ footer{padding-block:50px 60px}
 .foot p{color:var(--muted);margin-top:14px;max-width:26em;font-size:.95rem}
 .foot h4{font:700 .78rem var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 .foot ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:.96rem}
-.foot a,.foot button.fl{color:var(--ink);text-decoration:none;background:none;border:0;padding:0;font:inherit;cursor:pointer;text-align:left}
-.foot a:hover,.foot button.fl:hover{color:var(--brand)}
+.foot ul a,.foot button.fl{color:var(--ink);text-decoration:none;background:none;border:0;padding:0;font:inherit;cursor:pointer;text-align:left}
+.foot ul a:hover,.foot button.fl:hover{color:var(--brand)}
 .mail{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .mail code{font:500 .9rem var(--body);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:.35em .7em;overflow-wrap:anywhere}
 .mail button{font:700 .8rem var(--body);background:var(--brand-soft);color:var(--brand-deep);border:0;border-radius:999px;padding:.55em 1em;cursor:pointer}
