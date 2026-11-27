@@ -51,28 +51,66 @@
 <div id="viewApp" hidden>
   <header class="ad-top">
     <div class="ad-wrap ad-top-in">
-      <div class="ad-brand"><img src="assets/img/logo.png" alt=""><span>ZishuChat <em>Admin</em></span></div>
+      <div class="ad-top-l">
+        <button id="btnMenu" class="ad-icon" type="button" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="ad-brand"><img src="assets/img/logo.png" alt=""><span>ZishuChat <em>Admin</em></span></div>
+      </div>
       <div class="ad-top-r">
-        <span id="adminEmail" class="ad-muted ad-hide-s"></span>
-        <button id="btnRefresh" class="ad-btn ad-btn-line ad-sm" type="button">Refresh</button>
-        <button id="btnSignOut" class="ad-btn ad-btn-line ad-sm" type="button">Sign out</button>
+        <button id="btnRefresh" class="ad-icon" type="button" aria-label="Refresh data" title="Refresh data">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
     </div>
   </header>
 
-  <main class="ad-wrap ad-main">
-    <section id="stats" class="ad-stats" aria-label="Overview"></section>
+  <div id="scrim" class="ad-scrim" hidden></div>
+  <nav id="drawer" class="ad-drawer" aria-label="Menu" aria-hidden="true">
+    <div class="ad-drawer-head">
+      <img src="assets/img/logo.png" alt="">
+      <div><b>ZishuChat Admin</b><span id="adminEmail" class="ad-muted ad-small"></span></div>
+    </div>
+    <div id="navItems" class="ad-nav-list"></div>
+    <div class="ad-nav-sep"></div>
+    <button id="btnCsv" class="ad-nav" type="button"></button>
+    <button id="btnSignOut" class="ad-nav" type="button"></button>
+  </nav>
 
-    <section class="ad-card ad-listcard">
-      <div class="ad-tools">
-        <input id="search" class="ad-search" type="search" placeholder="Search name, @username, email, phone or ID" autocomplete="off">
-        <button id="btnCsv" class="ad-btn ad-btn-line ad-sm" type="button">Export CSV</button>
+  <main class="ad-wrap ad-main">
+    <!-- dashboard -->
+    <section id="scrDash">
+      <h1 class="ad-h1">Dashboard</h1>
+      <p id="dashSub" class="ad-muted ad-small"></p>
+      <div id="stats" class="ad-stats" aria-label="Overview"></div>
+
+      <h2 class="ad-h2">Quick actions</h2>
+      <div id="quick" class="ad-quick"></div>
+
+      <div class="ad-rangebar">
+        <h2 class="ad-h2">Progress</h2>
+        <div id="range" class="ad-chips" role="tablist" aria-label="Time range"></div>
       </div>
-      <div id="chips" class="ad-chips" role="tablist"></div>
-      <p id="loadInfo" class="ad-muted ad-small"></p>
-      <div id="list" class="ad-list"></div>
-      <p id="empty" class="ad-muted ad-center-t" hidden>No users found.</p>
-      <div class="ad-center-t"><button id="btnMore" class="ad-btn ad-btn-line" type="button" hidden>Show more</button></div>
+      <div class="ad-charts">
+        <article class="ad-card ad-chartcard"><h3>New users per day</h3><p class="ad-muted ad-small" id="subNew"></p><div id="chartNew" class="ad-chart"></div><div id="tblNew"></div></article>
+        <article class="ad-card ad-chartcard"><h3>Total users</h3><p class="ad-muted ad-small" id="subTotal"></p><div id="chartTotal" class="ad-chart"></div><div id="tblTotal"></div></article>
+        <article class="ad-card ad-chartcard"><h3>Account status</h3><p class="ad-muted ad-small">How many accounts are in good standing</p><div id="chartStatus"></div></article>
+        <article class="ad-card ad-chartcard"><h3>Newest users</h3><div id="newest" class="ad-list"></div><div class="ad-center-t"><button id="btnAllNew" class="ad-btn ad-btn-line ad-sm" type="button">See all new users</button></div></article>
+      </div>
+    </section>
+
+    <!-- user lists (Users, Online, Suspended, Banned, New) -->
+    <section id="scrList" hidden>
+      <h1 id="listTitle" class="ad-h1"></h1>
+      <p id="listSub" class="ad-muted ad-small"></p>
+      <div class="ad-card ad-listcard">
+        <div class="ad-tools">
+          <input id="search" class="ad-search" type="search" placeholder="Search name, @username, email, phone or ID" autocomplete="off">
+        </div>
+        <div id="list" class="ad-list"></div>
+        <p id="empty" class="ad-muted ad-center-t" hidden></p>
+        <div class="ad-center-t"><button id="btnMore" class="ad-btn ad-btn-line" type="button" hidden>Show more</button></div>
+      </div>
     </section>
   </main>
 </div>
@@ -89,6 +127,7 @@
 </aside>
 
 <div id="toast" class="ad-toast" hidden></div>
+<div id="tip" class="ad-tip" hidden role="status"></div>
 <script type="module" src="js/admin.js"></script>
 </body>
 </html>
