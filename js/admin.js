@@ -228,7 +228,7 @@ function icon(name, size) {
 const isNew = (u, ms) => { const c = toDate(u.createdAt); return !!c && Date.now() - c.getTime() < ms; };
 const SCREENS = {
   dashboard: { title: "Dashboard", icon: "dashboard", menu: true },
-  users: { title: "Users", icon: "users", menu: true, pred: () => true, empty: "No users found." },
+  users: { title: "All Users", icon: "users", menu: true, pred: () => true, empty: "No users found." },
   online: { title: "Online users", icon: "online", menu: true, pred: (u) => !!u.online, empty: "Nobody is online right now." },
   suspended: { title: "Suspended users", icon: "suspended", menu: true, pred: (u) => statusOf(u.uid) === "suspended", empty: "Nobody is suspended." },
   banned: { title: "Banned users", icon: "banned", menu: true, pred: (u) => statusOf(u.uid) === "banned", empty: "Nobody is banned." },
