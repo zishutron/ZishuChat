@@ -12,8 +12,29 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/admin.css">
+<style>
+#viewBoot{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#f3f6f6;color:#10211c;font-family:system-ui,sans-serif}
+#viewBoot[hidden]{display:none}
+#viewBoot img{width:84px;height:84px;border-radius:22px;box-shadow:0 10px 30px rgba(11,122,95,.18);animation:bootpulse 1.8s ease-in-out infinite}
+#viewBoot b{font-size:20px;letter-spacing:.2px}#viewBoot b span{color:#0b9a78}
+#viewBoot .bar{width:150px;height:4px;border-radius:4px;background:rgba(11,122,95,.15);overflow:hidden;position:relative}
+#viewBoot .bar::after{content:"";position:absolute;inset:0 auto 0 0;width:40%;border-radius:4px;background:#0b9a78;animation:bootslide 1.2s ease-in-out infinite}
+#viewBoot small{opacity:.6;font-size:13px}
+@keyframes bootslide{0%{transform:translateX(-100%)}100%{transform:translateX(375%)}}
+@keyframes bootpulse{50%{transform:scale(1.05)}}
+@media (prefers-color-scheme:dark){#viewBoot{background:#0b1512;color:#e8f3ef}}
+@media (prefers-reduced-motion:reduce){#viewBoot img,#viewBoot .bar::after{animation:none}}
+</style>
 </head>
 <body class="ad-body">
+
+<!-- loading screen (shown until sign-in state is known) -->
+<div id="viewBoot" role="status" aria-live="polite">
+  <img src="assets/img/logo.png" alt="">
+  <b>ZishuChat <span>Admin</span></b>
+  <div class="bar"></div>
+  <small>Loading dashboard&hellip;</small>
+</div>
 
 <!-- sign in -->
 <main id="viewLogin" class="ad-center" hidden>
