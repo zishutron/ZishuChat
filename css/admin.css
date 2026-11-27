@@ -205,3 +205,16 @@ textarea{resize:vertical;min-height:84px}
 .ad-listcard .ad-tools{margin-bottom:6px}
 .ad-chartcard .ad-center-t{margin-top:8px}
 @media (min-width:900px){.ad-main{padding-top:26px}}
+
+/* v3: flat list like a phone call log (no card around users) */
+.ad-listwrap{min-width:0}
+.ad-listwrap .ad-tools{margin:14px 0 8px}
+.ad-search-flat{width:100%;border:0;border-radius:16px;background:var(--surface-2);padding:14px 16px 14px 46px;font-size:16px;color:var(--ink);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23888'%3E%3Cpath d='M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 14 15.5l.3.3v.8l5 5 1.5-1.5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:14px center;background-size:22px}
+.ad-search-flat:focus{outline:2px solid var(--series-1,#257de0);outline-offset:0}
+.ad-list{gap:0;margin-top:0}
+.ad-row{position:relative;padding:12px 4px;border-radius:0;border:0}
+.ad-row:hover{background:var(--surface-2)}
+.ad-row::after{content:"";position:absolute;left:68px;right:0;bottom:0;height:1px;background:var(--line)}
+.ad-row:last-child::after{display:none}
