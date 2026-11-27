@@ -309,17 +309,6 @@ function stats() {
     mk(c.banned, "Banned", "banned", "banned", c.banned ? "hot" : ""));
   $("dashSub").textContent = users.size ? "Tap any card to open that list." : "";
 }
-function quick() {
-  const qa = (ic, label, fn) => h("button", { class: "ad-qa", type: "button", onclick: fn }, h("i", null, icon(ic, 20)), h("span", null, label));
-  $("quick").replaceChildren(
-    qa("search", "Find a user", () => { go("users"); setTimeout(() => $("search").focus(), 60); }),
-    qa("online", "Who is online", () => go("online")),
-    qa("suspended", "Suspended users", () => go("suspended")),
-    qa("banned", "Banned users", () => go("banned")),
-    qa("download", "Export CSV", () => exportCsv([...users.values()])),
-    qa("refresh", "Refresh data", () => loadAll()));
-}
-
 const RANGES = [7, 14, 30, 90];
 function rangeChips() {
   $("range").replaceChildren(...RANGES.map((d) => h("button", { class: "ad-chip", role: "tab", "aria-selected": String(rangeDays === d), onclick: () => { rangeDays = d; rangeChips(); charts(); } }, d + " days")));
@@ -554,7 +543,7 @@ function updateInfo(n) {
 }
 function render() {
   menu();
-  if (current === "dashboard") { stats(); quick(); rangeChips(); newest(); charts(); }
+  if (current === "dashboard") { stats(); rangeChips(); newest(); charts(); }
   else renderList();
 }
 
