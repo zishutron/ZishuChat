@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B7A5F">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<title>ZishuChat Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="ad-body">
+
+<!-- sign in -->
+<main id="viewLogin" class="ad-center" hidden>
+  <div class="ad-card ad-login">
+    <img src="assets/img/logo.png" alt="" class="ad-logo">
+    <h1>Admin panel</h1>
+    <p class="ad-muted">ZishuChat &middot; private. Only the app owner can open this.</p>
+    <button id="btnGoogle" class="ad-btn ad-btn-line" type="button">
+      <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.8c4.3-4 6.9-9.9 6.9-17.2z"/><path fill="#FBBC05" d="M10.5 28.7a14.5 14.5 0 0 1 0-9.4l-7.9-6.1a24 24 0 0 0 0 21.6l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.8c-2.1 1.4-4.8 2.3-8.5 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <div class="ad-or"><span>or</span></div>
+    <form id="formLogin" autocomplete="on">
+      <input id="inEmail" type="email" placeholder="Email" autocomplete="username" required>
+      <input id="inPass" type="password" placeholder="Password" autocomplete="current-password" required>
+      <button id="btnLogin" class="ad-btn ad-btn-brand" type="submit">Sign in</button>
+    </form>
+    <p id="loginErr" class="ad-err" hidden></p>
+  </div>
+</main>
+
+<!-- signed in, but not an admin -->
+<main id="viewDenied" class="ad-center" hidden>
+  <div class="ad-card ad-login">
+    <h1>No admin access</h1>
+    <p class="ad-muted">You are signed in as <b id="deniedEmail"></b>, but this account is not an admin.</p>
+    <p class="ad-muted">To make it an admin, open Firebase console &rarr; Firestore Database, create the collection <code>admins</code>, and add a document whose <b>Document ID</b> is:</p>
+    <div class="ad-uidbox"><code id="deniedUid"></code><button id="btnCopyUid" class="ad-btn ad-btn-line ad-sm" type="button">Copy</button></div>
+    <p class="ad-muted">(add any field, for example <code>role</code> = <code>owner</code>), then reload this page.</p>
+    <button id="btnDeniedOut" class="ad-btn ad-btn-line" type="button">Sign out</button>
+  </div>
+</main>
+
+<!-- panel -->
+<div id="viewApp" hidden>
+  <header class="ad-top">
+    <div class="ad-wrap ad-top-in">
+      <div class="ad-brand"><img src="assets/img/logo.png" alt=""><span>ZishuChat <em>Admin</em></span></div>
+      <div class="ad-top-r">
+        <span id="adminEmail" class="ad-muted ad-hide-s"></span>
+        <button id="btnRefresh" class="ad-btn ad-btn-line ad-sm" type="button">Refresh</button>
+        <button id="btnSignOut" class="ad-btn ad-btn-line ad-sm" type="button">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="ad-wrap ad-main">
+    <section id="stats" class="ad-stats" aria-label="Overview"></section>
+
+    <section class="ad-card ad-listcard">
+      <div class="ad-tools">
+        <input id="search" class="ad-search" type="search" placeholder="Search name, @username, email, phone or ID" autocomplete="off">
+        <button id="btnCsv" class="ad-btn ad-btn-line ad-sm" type="button">Export CSV</button>
+      </div>
+      <div id="chips" class="ad-chips" role="tablist"></div>
+      <p id="loadInfo" class="ad-muted ad-small"></p>
+      <div id="list" class="ad-list"></div>
+      <p id="empty" class="ad-muted ad-center-t" hidden>No users found.</p>
+      <div class="ad-center-t"><button id="btnMore" class="ad-btn ad-btn-line" type="button" hidden>Show more</button></div>
+    </section>
+  </main>
+</div>
+
+<!-- user details -->
+<aside id="detail" class="ad-detail" hidden aria-modal="true" role="dialog">
+  <div class="ad-detail-in">
+    <div class="ad-detail-top">
+      <button id="btnBack" class="ad-btn ad-btn-line ad-sm" type="button">&larr; Back</button>
+      <span id="detailTitle" class="ad-detail-title"></span>
+    </div>
+    <div id="detailBody"></div>
+  </div>
+</aside>
+
+<div id="toast" class="ad-toast" hidden></div>
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+ZishuChat admin panel - setup (one time, about 10 minutes)
+
+1. Publish the Firestore rules
+   Firebase console > Firestore Database > Rules > paste the contents of firestore-rules-v9.json > Publish.
+
+2. Allow your website address for sign-in
+   Firebase console > Authentication > Settings > Authorized domains > Add domain
+   (the address where the website is hosted, for example yourname.github.io or yoursite.netlify.app).
+   Google (and Email/Password if you want to use it) must be enabled under Authentication > Sign-in method.
+
+3. Upload the website files
+   admin.html, css/admin.css, js/admin.js and the updated privacy.html go into the same website folder
+   (next to index.html). The panel does NOT work when admin.html is opened from the phone's file manager;
+   it must be opened through the website address:  https://your-site/admin.html
+   There is no link to it on the public pages, and search engines are told to ignore it.
+
+4. Make your account an admin
+   Open /admin.html and sign in (Google, or the e-mail and password of your ZishuChat account).
+   The screen says "No admin access" and shows your User ID. Then:
+   Firebase console > Firestore Database > Start collection > Collection ID: admins
+   > Document ID: paste your User ID > add one field (role = owner) > Save.
+   Reload /admin.html. The panel opens.
+   Only accounts that have a document in "admins" can read user data; nobody can add one from the app or the website.
+
+What the panel shows
+   Totals (users, online, new, suspended, banned), a searchable user list (name, @username, e-mail, phone, ID),
+   and for every user: profile, sign-in details, phone model and app version, saved contacts, who saved them,
+   blocked users, groups and one-to-one chats (names and counts only, never message text),
+   and the Suspend / Ban / Restore controls. "Export CSV" downloads the current list.
+   E-mail, phone and phone model appear for a user after they open the updated app once.
+
+Suspend and ban
+   Suspend = until a date and time. Ban = permanent. Restore removes either at once.
+   The user's app shows an "Account suspended" screen with your reason and the end date, and the server
+   rules refuse their new messages and calls even if they use an old app version.
+   Their Firebase sign-in account itself is not deleted or disabled (that needs the Firebase console or a paid backend).
