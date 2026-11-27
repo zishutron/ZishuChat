@@ -62,6 +62,7 @@ function toast(msg, bad) {
   toast.t = setTimeout(() => { t.hidden = true; }, 3200);
 }
 function show(view) {
+  $("viewBoot").hidden = true;
   for (const id of ["viewLogin", "viewDenied", "viewApp"]) $(id).hidden = id !== view;
   if (view !== "viewApp") $("detail").hidden = true;
 }
@@ -125,8 +126,8 @@ $("formLogin").addEventListener("submit", async (ev) => {
   }
   $("btnLogin").disabled = false;
 });
-$("btnSignOut").addEventListener("click", () => signOut(auth));
-$("btnDeniedOut").addEventListener("click", () => signOut(auth));
+$("btnSignOut").addEventListener("click", () => { clearCache(); signOut(auth); });
+$("btnDeniedOut").addEventListener("click", () => { clearCache(); signOut(auth); });
 $("btnCopyUid").addEventListener("click", () => copy($("deniedUid").textContent));
 $("btnRefresh").addEventListener("click", () => loadAll());
 
@@ -135,14 +136,52 @@ function copy(text) {
   if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done); else done();
 }
 
+// ---- local cache: show the last known data instantly, refresh in the background
+const CACHE_KEY = "zc_admin_cache_v1";
+const packVal = (v) => (v && typeof v.toDate === "function") ? { __t: v.toDate().getTime() } : (v instanceof Date ? { __t: v.getTime() } : v);
+const packObj = (o) => { const r = {}; for (const k in o) if (k !== "account" && k !== "uid") r[k] = packVal(o[k]); return r; };
+const reviveObj = (o) => { const r = {}; for (const k in o) { const v = o[k]; r[k] = (v && typeof v === "object" && typeof v.__t === "number") ? new Date(v.__t) : v; } return r; };
+let savedAt = 0;
+function saveCache() {
+  try {
+    if (!me || !users.size) return;
+    const payload = {
+      uid: me.uid, t: Date.now(),
+      users: [...users.values()].map((u) => ({ uid: u.uid, d: packObj(u), a: u.account ? packObj(u.account) : null })),
+      bans: [...bans.entries()].map(([id, b]) => [id, packObj(b)])
+    };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+  } catch (e) { /* storage full or blocked: just skip caching */ }
+}
+function clearCache() { try { localStorage.removeItem(CACHE_KEY); } catch (e) {} }
+function readCache(uid) {
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+    if (!c || c.uid !== uid || !Array.isArray(c.users)) return false;
+    users.clear(); bans.clear();
+    for (const r of c.users) users.set(r.uid, { uid: r.uid, ...reviveObj(r.d), account: r.a ? reviveObj(r.a) : null });
+    for (const [id, b] of c.bans || []) bans.set(id, reviveObj(b));
+    savedAt = c.t || 0;
+    return users.size > 0;
+  } catch (e) { return false; }
+}
+
 onAuthStateChanged(auth, async (u) => {
   me = u;
   if (!u) { users.clear(); bans.clear(); show("viewLogin"); return; }
+  // cached data from a previous (verified) visit: open the panel immediately, verify + refresh behind it
+  const cached = readCache(u.uid);
+  if (cached) {
+    $("adminEmail").textContent = u.email || "";
+    show("viewApp");
+    route();
+  }
   let isAdmin = false;
   try {
     isAdmin = (await getDoc(doc(db, "admins", u.uid))).exists();
-  } catch (e) { isAdmin = false; }
+  } catch (e) { isAdmin = cached; }   // offline: keep showing what we have
   if (!isAdmin) {
+    clearCache(); users.clear(); bans.clear();
     $("deniedEmail").textContent = u.email || u.phoneNumber || u.uid;
     $("deniedUid").textContent = u.uid;
     show("viewDenied");
@@ -151,12 +190,12 @@ onAuthStateChanged(auth, async (u) => {
   $("adminEmail").textContent = u.email || "";
   show("viewApp");
   await loadAll();
-  route();
+  if (!cached) route();
 });
 
 // ------------------------------------------------------------------ data
 async function loadAll() {
-  $("dashSub").textContent = "Loading users…"; $("listSub").textContent = "Loading users…";
+  const msg = users.size ? "Updating\u2026" : "Loading users\u2026"; $("dashSub").textContent = msg; $("listSub").textContent = msg;
   try {
     const [us, bs] = await Promise.all([getDocs(collection(db, "users")), getDocs(collection(db, "bans"))]);
     const keep = new Map(users);
@@ -173,8 +212,11 @@ async function loadAll() {
     toast(friendlyError(e), true);
     return;
   }
+  savedAt = Date.now();
   render();
-  loadAccounts();
+  saveCache();
+  await loadAccounts();
+  saveCache();
 }
 
 // e-mail / phone / device live in users/{uid}/private/account; fetched in the background a few at a time
@@ -307,7 +349,7 @@ function stats() {
     mk(d7, "New in 7 days", "new7", "plus"),
     mk(c.suspended, "Suspended", "suspended", "suspended", c.suspended ? "hot" : ""),
     mk(c.banned, "Banned", "banned", "banned", c.banned ? "hot" : ""));
-  $("dashSub").textContent = users.size ? "Tap any card to open that list." : "";
+  $("dashSub").textContent = users.size ? "Tap any card to open that list." + (savedAt ? " \u00b7 Updated " + ago(new Date(savedAt)) : "") : "";
 }
 const RANGES = [7, 14, 30, 90];
 function rangeChips() {
