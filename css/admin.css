@@ -218,3 +218,12 @@ textarea{resize:vertical;min-height:84px}
 .ad-row:hover{background:var(--surface-2)}
 .ad-row::after{content:"";position:absolute;left:68px;right:0;bottom:0;height:1px;background:var(--line)}
 .ad-row:last-child::after{display:none}
+
+/* v4: reports */
+.ad-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.ad-shot{display:block;width:100%;max-height:340px;object-fit:cover;border-radius:12px;border:1px solid var(--line);background:var(--surface-2)}
+.ad-quote{margin:.4em 0 0;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface-2);padding:12px 14px;border-radius:12px;line-height:1.5}
+.ad-card .ad-actions,.ad-actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.ad-badge.ok{background:rgba(10,172,35,.14);color:var(--st-good)}
+.ad-stat.hot b{color:var(--st-crit)}
+.ad-pad{padding:16px 18px;margin-bottom:14px}.ad-pad .ad-row{padding-left:0;padding-right:0}.ad-pad .ad-kv:first-child{padding-top:0}
