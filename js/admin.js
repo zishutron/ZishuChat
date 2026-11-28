@@ -7,7 +7,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, collection, collectionGroup, doc, getDoc, getDocs, query, where,
-  setDoc, deleteDoc, serverTimestamp, Timestamp
+  setDoc, updateDoc, deleteDoc, serverTimestamp, Timestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Same Firebase project as the Android app (values from AppConfig.java).
@@ -82,6 +82,9 @@ let me = null;
 const users = new Map();   // uid -> { uid, ...profile, account }
 const bans = new Map();    // uid -> ban data
 let needle = "";
+let reports = [];
+let reportFilter = "open";
+let reportsError = "";
 let shown = PAGE;
 let loadingAccounts = 0;
 let accountFails = 0;
@@ -212,11 +215,24 @@ async function loadAll() {
     toast(friendlyError(e), true);
     return;
   }
+  await loadReports();
   savedAt = Date.now();
   render();
   saveCache();
   await loadAccounts();
   saveCache();
+}
+
+async function loadReports() {
+  try {
+    const rs = await getDocs(collection(db, "reports"));
+    reports = rs.docs.map((d) => ({ id: d.id, ...d.data() }));
+    reports.sort((a, b) => (toDate(b.createdAt)?.getTime() || 0) - (toDate(a.createdAt)?.getTime() || 0));
+    reportsError = "";
+  } catch (e) {
+    reports = [];
+    reportsError = /permission/i.test(String(e && (e.code || e.message))) ? "Reports are not readable yet. Publish the latest Firestore rules (v10)." : friendlyError(e);
+  }
 }
 
 // e-mail / phone / device live in users/{uid}/private/account; fetched in the background a few at a time
@@ -254,6 +270,7 @@ const ICONS = {
   logout: "M10 17l1.4-1.4L8.8 13H20v-2H8.8l2.6-2.6L10 7l-5 5zM4 5h8V3H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8v-2H4z",
   plus: "M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z",
   arrow: "M9 6l6 6-6 6",
+  flag: "M14.4 6 14 4H5v17h2v-7h5.6l.4 2h7V6z",
 };
 function icon(name, size) {
   const ns = "http://www.w3.org/2000/svg";
@@ -274,6 +291,7 @@ const SCREENS = {
   online: { title: "Online users", icon: "online", menu: true, pred: (u) => !!u.online, empty: "Nobody is online right now." },
   suspended: { title: "Suspended users", icon: "suspended", menu: true, pred: (u) => statusOf(u.uid) === "suspended", empty: "Nobody is suspended." },
   banned: { title: "Banned users", icon: "banned", menu: true, pred: (u) => statusOf(u.uid) === "banned", empty: "Nobody is banned." },
+  reports: { title: "Reports", icon: "flag", menu: true, pred: () => true, empty: "No reports here." },
   new1: { title: "New users · last 24 hours", pred: (u) => isNew(u, DAY), empty: "Nobody joined in the last 24 hours." },
   new7: { title: "New users · last 7 days", pred: (u) => isNew(u, 7 * DAY), empty: "Nobody joined in the last 7 days." },
 };
@@ -287,7 +305,8 @@ function parseHash() {
   return { screen, uid: m && m[2] ? decodeURIComponent(m[2]) : null };
 }
 const go = (screen) => { location.hash = "#/" + screen; };
-function openUser(uid) { cameFromApp = true; location.hash = "#/" + current + "/" + encodeURIComponent(uid); }
+function openUser(uid) { cameFromApp = true; location.hash = "#/" + (current === "reports" ? "users" : current) + "/" + encodeURIComponent(uid); }
+function openReport(id) { cameFromApp = true; location.hash = "#/reports/" + encodeURIComponent(id); }
 window.addEventListener("hashchange", route);
 $("btnBack").addEventListener("click", () => { if (cameFromApp) history.back(); else go(current); });
 function closeDetail() { $("detail").hidden = true; document.body.style.overflow = ""; }
@@ -304,7 +323,7 @@ function route() {
   $("scrDash").hidden = screen !== "dashboard";
   $("scrList").hidden = screen === "dashboard";
   render();
-  if (uid) openDetail(uid); else closeDetail();
+  if (uid && screen === "reports") openReportDetail(uid); else if (uid) openDetail(uid); else closeDetail();
 }
 
 // ------------------------------------------------------------------ menu (hamburger drawer)
@@ -315,7 +334,7 @@ $("scrim").addEventListener("click", closeMenu);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
 
 function counts() {
-  const c = { users: users.size, online: 0, suspended: 0, banned: 0 };
+  const c = { users: users.size, online: 0, suspended: 0, banned: 0, reports: reports.filter((r) => (r.status || "open") === "open").length };
   for (const u of users.values()) {
     if (u.online) c.online++;
     const st = statusOf(u.uid);
@@ -348,7 +367,8 @@ function stats() {
     mk(d1, "New in 24 hours", "new1", "plus"),
     mk(d7, "New in 7 days", "new7", "plus"),
     mk(c.suspended, "Suspended", "suspended", "suspended", c.suspended ? "hot" : ""),
-    mk(c.banned, "Banned", "banned", "banned", c.banned ? "hot" : ""));
+    mk(c.banned, "Banned", "banned", "banned", c.banned ? "hot" : ""),
+    mk(c.reports, "Open reports", "reports", "flag", c.reports ? "hot" : ""));
   $("dashSub").textContent = users.size ? "Tap any card to open that list." + (savedAt ? " \u00b7 Updated " + ago(new Date(savedAt)) : "") : "";
 }
 const RANGES = [7, 14, 30, 90];
@@ -568,6 +588,8 @@ function renderList() {
   if ($("scrList").hidden) return;
   const d = SCREENS[current];
   $("listTitle").textContent = d.title;
+  if (current === "reports") { renderReports(); return; }
+  $("reportChips").hidden = true;
   const rows = sorted();
   $("list").replaceChildren(...rows.slice(0, shown).map((u) => userRow(u)));
   $("empty").textContent = needle ? "No user matches your search." : d.empty;
@@ -610,6 +632,122 @@ function exportCsv(list) {
   const blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
   const link = h("a", { href: URL.createObjectURL(blob), download: "zishuchat-users.csv" });
   document.body.append(link); link.click(); link.remove();
+}
+
+// ------------------------------------------------------------------ reports
+const REASON_NAMES = { spam: "Spam", harassment: "Harassment or bullying", hate: "Hate speech", sexual: "Nudity or sexual content",
+  violence: "Violence or threats", scam: "Scam or fraud", impersonation: "Impersonation", other: "Something else" };
+const STATUS_NAMES = { open: "Open", resolved: "Resolved", dismissed: "Dismissed" };
+const reasonName = (r) => REASON_NAMES[r.reason] || r.reason || "—";
+const reportStatus = (r) => r.status || "open";
+
+function renderReports() {
+  const chips = $("reportChips");
+  chips.hidden = false;
+  const defs = [["open", "Open"], ["resolved", "Resolved"], ["dismissed", "Dismissed"], ["all", "All"]];
+  chips.replaceChildren(...defs.map(([k, label]) => {
+    const n = k === "all" ? reports.length : reports.filter((r) => reportStatus(r) === k).length;
+    return h("button", { class: "ad-chip", role: "tab", "aria-selected": String(reportFilter === k), onclick: () => { reportFilter = k; shown = PAGE; renderReports(); } }, label + " (" + n + ")");
+  }));
+  const rows = reports.filter((r) => (reportFilter === "all" || reportStatus(r) === reportFilter) && (!needle ||
+    [r.targetName, r.targetUsername, r.reporterName, r.reporterUsername, r.messageText, r.details, reasonName(r)].filter(Boolean).join(" ").toLowerCase().includes(needle)));
+  $("list").replaceChildren(...rows.slice(0, shown).map(reportRow));
+  $("empty").textContent = reportsError || (needle ? "No report matches your search." : "No reports here.");
+  $("empty").hidden = rows.length > 0;
+  $("btnMore").hidden = rows.length <= shown;
+  $("btnMore").textContent = "Show more (" + (rows.length - shown) + " left)";
+  $("listSub").textContent = reportsError ? reportsError : rows.length + (rows.length === 1 ? " report" : " reports");
+}
+
+function reportRow(r) {
+  const st = reportStatus(r);
+  const target = users.get(r.targetUid) || { uid: r.targetUid, name: r.targetName, username: r.targetUsername };
+  const what = (r.type === "message" ? "Message · " : "User · ") + reasonName(r);
+  return h("button", { class: "ad-row", type: "button", onclick: () => openReport(r.id) },
+    avatar(target),
+    h("div", { class: "ad-who" },
+      h("b", null, r.targetName || (r.targetUsername ? "@" + r.targetUsername : r.targetUid || "Unknown")),
+      h("span", null, what + " · by " + (r.reporterName || r.reporterUsername || "someone"))),
+    h("div", { class: "ad-side" },
+      h("span", { class: "ad-badge " + (st === "open" ? "suspended" : st === "dismissed" ? "" : "ok") }, STATUS_NAMES[st] || st),
+      h("small", null, ago(toDate(r.createdAt)))));
+}
+
+async function setReportStatus(r, status) {
+  try {
+    await updateDoc(doc(db, "reports", r.id), { status, handledBy: me.email || me.uid, handledAt: serverTimestamp() });
+    r.status = status;
+    toast(status === "open" ? "Report reopened" : "Report marked " + status);
+    menu(); renderReportDetail(r); if (current === "dashboard") render();
+  } catch (e) { toast(friendlyError(e), true); }
+}
+async function removeReport(r) {
+  if (!confirm("Delete this report permanently?")) return;
+  try {
+    await deleteDoc(doc(db, "reports", r.id));
+    reports = reports.filter((x) => x.id !== r.id);
+    toast("Report deleted");
+    closeDetail(); go("reports");
+  } catch (e) { toast(friendlyError(e), true); }
+}
+
+function openReportDetail(id) {
+  $("detail").hidden = false;
+  document.body.style.overflow = "hidden";
+  $("detail").scrollTop = 0;
+  const r = reports.find((x) => x.id === id);
+  if (!r) { $("detailTitle").textContent = "Report"; $("detailBody").replaceChildren(h("p", { class: "ad-muted", style: "padding:20px" }, "This report no longer exists.")); return; }
+  renderReportDetail(r);
+}
+
+function personCard(title, uid, name, username) {
+  const u = users.get(uid) || { uid, name, username };
+  const open = uid ? () => openUser(uid) : null;
+  return h("div", { class: "ad-card ad-pad" }, h("h3", { class: "ad-h2" }, title),
+    h("button", { class: "ad-row", type: "button", onclick: open },
+      avatar(u),
+      h("div", { class: "ad-who" }, h("b", null, name || nameOf(u)), h("span", null, (username ? "@" + username : "") + (uid ? " · " + uid : ""))),
+      h("div", { class: "ad-side" }, badge(uid) || null)));
+}
+
+function renderReportDetail(r) {
+  $("detailTitle").textContent = "Report";
+  const st = reportStatus(r);
+  const parts = [];
+  parts.push(h("div", { class: "ad-card ad-pad" },
+    h("dl", { style: "margin:0" },
+      kv("Type", r.type === "message" ? "Message report" : "User report"),
+      kv("Reason", reasonName(r)),
+      kv("Status", STATUS_NAMES[st] || st),
+      kv("Sent", r.createdAt ? fmt(toDate(r.createdAt)) + " (" + ago(toDate(r.createdAt)) + ")" : "—"),
+      r.handledBy ? kv("Handled by", r.handledBy + (r.handledAt ? " · " + ago(toDate(r.handledAt)) : "")) : null)));
+  parts.push(personCard("Reported user", r.targetUid, r.targetName, r.targetUsername));
+  parts.push(personCard("Reported by", r.reporterUid, r.reporterName, r.reporterUsername));
+  if (r.type === "message") {
+    const box = h("div", { class: "ad-card ad-pad" }, h("h3", { class: "ad-h2" }, "Reported message"));
+    if (r.messageUrl && r.messageType === "image") {
+      box.append(h("a", { href: r.messageUrl, target: "_blank", rel: "noopener noreferrer" }, h("img", { class: "ad-shot", src: r.messageUrl, alt: "Reported photo", loading: "lazy", referrerpolicy: "no-referrer" })));
+    }
+    box.append(h("p", { class: "ad-quote" }, r.messageText || "[" + (r.messageType || "message") + "]"));
+    box.append(h("p", { class: "ad-muted" }, (r.messageAt ? fmt(new Date(r.messageAt)) + " · " : "") + "Chat " + (r.chatId || "—")));
+    parts.push(box);
+  }
+  parts.push(h("div", { class: "ad-card ad-pad" }, h("h3", { class: "ad-h2" }, "What the reporter said"),
+    h("p", { class: "ad-quote" }, r.details || "(no description)")));
+  const shots = Array.isArray(r.screenshots) ? r.screenshots : [];
+  if (shots.length) {
+    parts.push(h("div", { class: "ad-card ad-pad" }, h("h3", { class: "ad-h2" }, "Screenshots (" + shots.length + ")"),
+      h("div", { class: "ad-shots" }, shots.map((u) => h("a", { href: u, target: "_blank", rel: "noopener noreferrer" },
+        h("img", { class: "ad-shot", src: u, alt: "Screenshot", loading: "lazy", referrerpolicy: "no-referrer" }))))));
+  }
+  const acts = [];
+  if (st !== "resolved") acts.push(h("button", { class: "ad-btn ad-btn-brand", type: "button", onclick: () => setReportStatus(r, "resolved") }, "Mark resolved"));
+  if (st !== "dismissed") acts.push(h("button", { class: "ad-btn ad-btn-line", type: "button", onclick: () => setReportStatus(r, "dismissed") }, "Dismiss"));
+  if (st !== "open") acts.push(h("button", { class: "ad-btn ad-btn-line", type: "button", onclick: () => setReportStatus(r, "open") }, "Reopen"));
+  if (r.targetUid) acts.push(h("button", { class: "ad-btn ad-btn-line", type: "button", onclick: () => openUser(r.targetUid) }, "Open user (suspend / ban)"));
+  acts.push(h("button", { class: "ad-btn ad-btn-danger", type: "button", onclick: () => removeReport(r) }, "Delete report"));
+  parts.push(h("div", { class: "ad-actions" }, acts));
+  $("detailBody").replaceChildren(...parts);
 }
 
 // ------------------------------------------------------------------ detail view
