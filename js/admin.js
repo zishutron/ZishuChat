@@ -503,12 +503,12 @@ function tableView(host, data, col, valueKey) {
 function statusChart() {
   const c = counts();
   const active = Math.max(0, c.users - c.suspended - c.banned);
-  const parts = [["Active", active, "var(--st-good)", "✓"], ["Suspended", c.suspended, "var(--st-warn)", "⏸"], ["Banned", c.banned, "var(--st-crit)", "⊘"]];
+  const parts = [["Active", active, "var(--st-good)"], ["Suspended", c.suspended, "var(--st-warn)"], ["Banned", c.banned, "var(--st-crit)"]];
   const total = Math.max(1, c.users);
   const bar = h("div", { class: "ad-seg", role: "img", "aria-label": parts.map((p) => p[0] + " " + p[1]).join(", ") },
     parts.filter((p) => p[1] > 0).map((p) => h("span", { style: "flex:" + p[1] + ";background:" + p[2], title: p[0] + ": " + p[1] })));
   const legend = h("div", { class: "ad-legend" }, parts.map((p) => h("div", null,
-    h("i", { style: "background:" + p[2] }), h("span", null, p[3] + " " + p[0]), h("em", null, Math.round((p[1] / total) * 100) + "%"), h("b", null, p[1]))));
+    h("i", { style: "background:" + p[2] }), h("span", null, p[0]), h("em", null, Math.round((p[1] / total) * 100) + "%"), h("b", null, p[1]))));
   $("chartStatus").replaceChildren(bar, legend);
 }
 
@@ -588,6 +588,7 @@ function renderList() {
   if ($("scrList").hidden) return;
   const d = SCREENS[current];
   $("listTitle").textContent = d.title;
+  $("search").hidden = current === "reports";
   if (current === "reports") { renderReports(); return; }
   $("reportChips").hidden = true;
   const rows = sorted();
@@ -678,7 +679,10 @@ async function setReportStatus(r, status) {
     await updateDoc(doc(db, "reports", r.id), { status, handledBy: me.email || me.uid, handledAt: serverTimestamp() });
     r.status = status;
     toast(status === "open" ? "Report reopened" : "Report marked " + status);
-    menu(); renderReportDetail(r); if (current === "dashboard") render();
+    reportFilter = "open";
+    closeDetail();
+    if (cameFromApp) history.back(); else go("reports");
+    setTimeout(() => { menu(); if (current === "reports") renderReports(); }, 0);
   } catch (e) { toast(friendlyError(e), true); }
 }
 async function removeReport(r) {
